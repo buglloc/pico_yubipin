@@ -1,5 +1,6 @@
 # PicoYubiPin
 A simple Yubikey PIV PIN stealer based on RP2040 USB Sniffer.
+![](./docs/cover.png)
 
 # How it works?
 [Проект выходного дня: PicoYubiPin](https://ut.buglloc.com/iot/esphome/pico-yubipin/)
