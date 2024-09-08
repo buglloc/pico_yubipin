@@ -118,7 +118,7 @@ void usb_sniff_program_init(PIO pio, uint sm, uint offset, uint dp_pin, uint dma
 }
 
 // Capture USB traffic on Core 1
-void core1_main()
+void usb_read_loop()
 {
   PIO pio = pio0;
 
@@ -266,20 +266,24 @@ int main()
   gpio_pull_up(SDA_PIN);
   gpio_pull_up(SCL_PIN);
 
-  sleep_ms(250);
-
   // Initialize GPIO for error indicating LED
   gpio_init(LED_PIN);
   gpio_set_dir(LED_PIN, true);
 
   queue_init(&packet_queue, sizeof(packet_pos_t), PACKET_QUEUE_LEN);
 
-  multicore_launch_core1(core1_main); // Start core1_main on another core
+  // Wait some time while display chip bootup
+  sleep_ms(500);
 
+  // Start core1_main on another core
+  multicore_launch_core1(usb_read_loop);
+
+  // Initialize display
   display = new pico_ssd1306::SSD1306(i2c1, 0x3C, pico_ssd1306::Size::W128xH64);
   display->setOrientation(0);
   show_pin("********");
 
+  // And parse USB packets, yay
   packet_pos_t packet;
   while (true) {
     if (queue_try_remove(&packet_queue, &packet)) {
