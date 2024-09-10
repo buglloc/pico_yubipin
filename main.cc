@@ -18,7 +18,6 @@
 #include "usb_sniff.pio.h"
 
 
-#define LED_PIN PICO_DEFAULT_LED_PIN
 #define DP_PIN 14          // USB D+ pin
 #define DM_PIN (DP_PIN + 1) // Next to the D+ pin (because of the restriction of PIO)
 
@@ -168,8 +167,8 @@ void show_pin(const char* pin)
 void process_usb_packet(packet_pos_t packet)
 {
   if (packet.len <= 1) {
-    gpio_put(LED_PIN, true);
-    return; // Skip invalid packet which has no content
+    // Skip invalid packet which has no content
+    return;
   }
 
   uint cur_pos = packet.start_pos;
@@ -177,23 +176,19 @@ void process_usb_packet(packet_pos_t packet)
   uint8_t second_byte = capture_byte(cur_pos++);
 
   if (first_byte != USB_SYNC) {
-    gpio_put(LED_PIN, true);
-    return; // Skip invalid packet which does not start with sync pattern
+    // Skip invalid packet which does not start with sync pattern
+    return;
   }
 
   // First 4 bits of the second byte are bit-inversion of PID, and the rest are PID itself.
   if (((~(second_byte >> 4)) & 0xF) != (second_byte & 0xF)) {
-    gpio_put(LED_PIN, true);
-    return; // Skip invalid packet which has a broken PID byte (First 4 bits are not bit-inversion of the rest)
+    // Skip invalid packet which has a broken PID byte (First 4 bits are not bit-inversion of the rest)
+    return;
   }
 
-  gpio_put(LED_PIN, false); // When a correct packet is received, turn off the LED
-
   uint pid = second_byte & 0xF;
-  // Filter packet by PID
-  // DATA0 + DATA1
   if (pid != 0b0011 && pid != 0b1011) {
-    // not DATA0/DATA1
+    // not DATA0 or DATA1 PID
     return;
   }
 
@@ -265,10 +260,6 @@ int main()
   gpio_set_function(SCL_PIN, GPIO_FUNC_I2C);
   gpio_pull_up(SDA_PIN);
   gpio_pull_up(SCL_PIN);
-
-  // Initialize GPIO for error indicating LED
-  gpio_init(LED_PIN);
-  gpio_set_dir(LED_PIN, true);
 
   queue_init(&packet_queue, sizeof(packet_pos_t), PACKET_QUEUE_LEN);
 
