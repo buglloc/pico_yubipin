@@ -9,28 +9,6 @@ set(toolchainVersion 13_2_Rel1)
 set(picotoolVersion 2.0.0)
 include(${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 # ====================================================================================
-# == DO NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
-if(WIN32)
-    set(USERHOME $ENV{USERPROFILE})
-else()
-    set(USERHOME $ENV{HOME})
-endif()
-set(sdkVersion 2.0.0)
-set(toolchainVersion 13_2_Rel1)
-set(picotoolVersion 2.0.0)
-include(${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
-# ====================================================================================
-# == DO NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
-if(WIN32)
-    set(USERHOME $ENV{USERPROFILE})
-else()
-    set(USERHOME $ENV{HOME})
-endif()
-set(sdkVersion 2.0.0)
-set(toolchainVersion 13_2_Rel1)
-set(picotoolVersion 2.0.0)
-include(${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
-# ====================================================================================
 cmake_minimum_required(VERSION 3.13)
 
 include(pico_sdk_import.cmake)
@@ -44,6 +22,8 @@ add_executable(pico_yubipin
 )
 
 add_subdirectory(pico-ssd1306)
+# add_subdirectory(pico-ws2812)
+
 pico_generate_pio_header(pico_yubipin ${CMAKE_CURRENT_LIST_DIR}/usb_sniff.pio)
 
 target_link_libraries(pico_yubipin
@@ -56,6 +36,7 @@ target_link_libraries(pico_yubipin
   hardware_i2c
 
   pico_ssd1306
+  # pico-ws2812
 )
 
 pico_add_extra_outputs(pico_yubipin)

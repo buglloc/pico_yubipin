@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "pico/stdlib.h"
@@ -55,7 +56,7 @@ queue_t packet_queue;
 // Number of DMA channel used for capturing
 uint capture_dma_chan;
 
-pico_ssd1306::SSD1306 *display;
+pico_ssd1306::SSD1306 *display = nullptr;
 
 // Called when DMA completes transfer of data whose amount is specified in its setting
 void handle_dma_complete_interrupt()
@@ -160,7 +161,7 @@ void show_pin(const char* pin)
 {
   display->clear();
   pico_ssd1306::drawText(display, font_12x16, "~YubiPin~", 10, 0);
-  pico_ssd1306::drawText(display, font_12x16, pin, 16, 28);
+  pico_ssd1306::drawText(display, font_12x16, pin, (128 - strlen(pin) * 12) / 2, 28);
   display->sendBuffer();
 }
 
@@ -255,7 +256,7 @@ int main()
   stdio_usb_init();
 
   // Initialize display
-  i2c_init(i2c1, 50000);
+  i2c_init(i2c1, 1000000);
   gpio_set_function(SDA_PIN, GPIO_FUNC_I2C);
   gpio_set_function(SCL_PIN, GPIO_FUNC_I2C);
   gpio_pull_up(SDA_PIN);
@@ -263,16 +264,15 @@ int main()
 
   queue_init(&packet_queue, sizeof(packet_pos_t), PACKET_QUEUE_LEN);
 
-  // Wait some time while display chip bootup
-  sleep_ms(500);
-
   // Start core1_main on another core
   multicore_launch_core1(usb_read_loop);
 
+  // Wait some time while display chip bootup
+  sleep_ms(250);
   // Initialize display
   display = new pico_ssd1306::SSD1306(i2c1, 0x3C, pico_ssd1306::Size::W128xH64);
   display->setOrientation(0);
-  show_pin("********");
+  show_pin("***");
 
   // And parse USB packets, yay
   packet_pos_t packet;
