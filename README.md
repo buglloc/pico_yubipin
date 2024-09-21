@@ -4,6 +4,7 @@ A simple Yubikey PIV PIN stealer based on RP2040 USB Sniffer.
 
 # How it works?
 [Проект выходного дня: PicoYubiPin](https://ut.buglloc.com/iot/esphome/pico-yubipin/)
+[Video demo](https://youtu.be/H2Kjh2nTDew)
 
 # Components
   - [RP2040-Zero](https://www.waveshare.com/wiki/RP2040-Zero)
