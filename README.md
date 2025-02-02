@@ -3,7 +3,7 @@ A simple Yubikey PIV PIN stealer based on RP2040 USB Sniffer.
 ![](./docs/cover.png)
 
 # How it works?
-  - Post about: [Проект выходного дня: PicoYubiPin](https://ut.buglloc.com/pico-yubipin/)
+  - Post about: [Проект выходного дня: PicoYubiPin](https://ut.buglloc.com/2024/09/pico-yubipin/)
   - Video demo: [YubiKey PIV PIN leakage using passive USB sniffing](https://www.youtube.com/watch?v=jcWku1uEvpM)
 
 # Components
